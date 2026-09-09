@@ -1,12 +1,9 @@
-import express, {
-  type NextFunction,
-  type Request,
-  type Response,
-} from "express";
+import express from "express";
 import { configDotenv } from "dotenv";
-import type appError from "./utils/app-error.utils.js";
-import STATUS from "./constants/http-status.constant.js";
-import { connectDB } from "./utils/db.utils.js";
+import { connectDB } from "./utils/db.util.js";
+import v1Routes from "./routes/v1.route.js";
+import { errorHandler } from "./middlewares/error-handler.middleware.js";
+import cors from "cors";
 
 configDotenv();
 
@@ -17,28 +14,21 @@ const app = express();
 const port = process.env.PORT;
 const environment_mode = process.env.ENVIRONMENT_MODE;
 
+app.use(cors());
+
 app.use(express.json());
 
+v1Routes(app);
+
+// handle 404 route
+app.use((req, res, next) => {
+  res
+    .status(404)
+    .json({ status: "error", message: "route not defined", code: 404 });
+});
+
 // handle error globally
-app.use(
-  (err: typeof appError, req: Request, res: Response, next: NextFunction) => {
-    console.log("err", err);
-    if (err.code === 11000) {
-      res.status(400).json({
-        status: STATUS.ERROR,
-        message: `you duplicate a uniq value db err message => ${err.errorResponse.errmsg}`,
-        code: 400,
-        data: err.keyValue,
-      });
-    }
-    res.status(err.code || 500).json({
-      status: err.status || "error",
-      message: err.message || "internal server error",
-      code: err.code,
-      data: err.data,
-    });
-  },
-);
+app.use(errorHandler);
 
 app.listen(port, () => {
   if (environment_mode === "development") {
