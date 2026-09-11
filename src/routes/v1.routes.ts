@@ -1,5 +1,6 @@
 import { type Express } from "express";
 import branchesRoutes from "../modules/branches/branch.route.js";
+import radiologiesRoutes from "../modules/radiologies/radiology.route.js";
 
 const ROUTE_PREFIX = "/api/v1";
 
@@ -10,4 +11,5 @@ export default function v1Routes(app: Express) {
     });
   });
   app.use(`${ROUTE_PREFIX}/branches`, branchesRoutes);
+  app.use(`${ROUTE_PREFIX}/radiologies`, radiologiesRoutes);
 }

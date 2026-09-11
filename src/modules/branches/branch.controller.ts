@@ -8,6 +8,8 @@ export const getAllBranchesController = asyncHandler(async (req, res) => {
   res.json(new ApiResponse(200, branches));
 });
 
+// ===========================================================
+
 export const createBranchController = asyncHandler(async (req, res) => {
   const { name, address } = req.body;
   const existBranch = await Branches.findOne({ name });
