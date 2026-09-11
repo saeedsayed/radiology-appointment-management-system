@@ -1,7 +1,7 @@
 import express from "express";
 import { configDotenv } from "dotenv";
-import { connectDB } from "./utils/db.util.js";
-import v1Routes from "./routes/v1.route.js";
+import { connectDB } from "./utils/db.js";
+import v1Routes from "./routes/v1.routes.js";
 import { errorHandler } from "./middlewares/error-handler.middleware.js";
 import cors from "cors";
 

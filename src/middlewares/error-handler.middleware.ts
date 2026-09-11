@@ -10,14 +10,21 @@ export const errorHandler = (
   const statusCode = err instanceof ApiError ? err.statusCode : 500;
   const message = err.message || "Internal Server Error";
   const errors = err instanceof ApiError ? err.errors : [];
-  //   if (err.code === 11000) {
-  //   res.status(400).json({
-  //     status: STATUS.ERROR,
-  //     message: `you duplicate a uniq value db err message => ${err.errorResponse.errmsg}`,
-  //     code: 400,
-  //     data: err.keyValue,
-  //   });
-  // }
+  const databaseError = err as Error & {
+    code?: number;
+    errorResponse?: { errmsg?: string };
+    keyValue?: unknown;
+  };
+
+  if (databaseError.code === 11000) {
+    res.status(400).json({
+      success: false,
+      statusCode: 400,
+      message: `you duplicate a uniq value db err message => ${databaseError.errorResponse?.errmsg ?? ""}`,
+      data: databaseError.keyValue,
+    });
+    return;
+  }
 
   res.status(statusCode).json({
     success: false,

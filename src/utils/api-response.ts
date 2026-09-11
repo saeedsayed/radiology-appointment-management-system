@@ -24,7 +24,8 @@ export class ApiError extends Error {
     errors: string[] = [],
     stack = "",
   ) {
-    super(message);
+    super();
+    this.message = message;
     this.statusCode = statusCode;
     this.success = false;
     this.errors = errors;
