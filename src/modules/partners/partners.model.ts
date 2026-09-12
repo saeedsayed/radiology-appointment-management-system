@@ -1,22 +1,34 @@
 import mongoose from "mongoose";
+import Radiologies from "../radiologies/radiology.model.js";
 
-const partner = new mongoose.Schema({
+const partnerSchema = new mongoose.Schema({
   name: String,
-  clients: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "client",
-  },
+  clients: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "client",
+    },
+  ],
   profitShare: [
     {
       radiologyCategory: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "radiologyCategory",
+        ref: "radiology",
+        validate: {
+          validator: async function (
+            value: mongoose.Types.ObjectId,
+          ): Promise<boolean> {
+            const category = await Radiologies.findById(value);
+            return !!category;
+          },
+          message: "Radiology category does not exist",
+        },
       },
       value: Number,
     },
   ],
 });
 
-const Partners = mongoose.model("partner");
+const Partners = mongoose.model("partner", partnerSchema);
 
 export default Partners;

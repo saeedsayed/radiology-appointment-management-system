@@ -4,7 +4,7 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 import Branches from "./branch.model.js";
 
 export const getAllBranchesController = asyncHandler(async (req, res) => {
-  const branches = await Branches.find();
+  const branches = await Branches.find().populate("availableRadiology");
   res.json(new ApiResponse(200, branches));
 });
 
@@ -32,7 +32,7 @@ export const updateBranchController = asyncHandler(async (req, res, next) => {
   }
   const updatedBranch = await Branches.findByIdAndUpdate(id, update, {
     new: true,
-  });
+  }).populate("availableRadiology");
   if (!updatedBranch) {
     res.status(400).json(new ApiResponse(404, null, "Branch not found"));
   }

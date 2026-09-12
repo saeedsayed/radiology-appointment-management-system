@@ -1,11 +1,24 @@
 import mongoose from "mongoose";
+import Radiologies from "../radiologies/radiology.model.js";
 
 const branchSchema = new mongoose.Schema(
   {
     name: { type: String, require: true, unique: true },
     address: { type: String, require: true },
     availableRadiology: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "radiology" },
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "radiology",
+        validate: {
+          validator: async function (
+            value: mongoose.Types.ObjectId,
+          ): Promise<boolean> {
+            const category = await Radiologies.findById(value);
+            return !!category;
+          },
+          message: "Radiology category does not exist",
+        },
+      },
     ],
     workSchedule: [
       {
