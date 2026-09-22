@@ -2,17 +2,20 @@ import { z } from "zod";
 import mongoose from "mongoose";
 
 const objectIdSchema = z
-  .string()
+  .string("the profit share category is require")
   .refine((val) => mongoose.Types.ObjectId.isValid(val), {
-    message: "Invalid ObjectId",
+    message: "Invalid category id",
   });
 
 const profitShareItemSchema = z.object({
-  radiologyCategory: objectIdSchema.optional(),
-  value: z.number().optional(),
+  category: objectIdSchema,
+  value: z.number("the profit share value is require"),
 });
 
 export const createPartnerSchema = z.object({
   name: z.string().optional(),
-  profitShare: z.array(profitShareItemSchema).optional(),
+  profitShare: z.array(
+    profitShareItemSchema,
+    "the profit share list is require",
+  ),
 });

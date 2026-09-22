@@ -4,9 +4,7 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 import Partners from "./partners.model.js";
 
 export const getAllPartnersController = asyncHandler(async (req, res) => {
-  const partners = await Partners.find().populate(
-    "profitShare.radiologyCategory",
-  );
+  const partners = await Partners.find().populate("profitShare.category");
   res.json(new ApiResponse(200, partners));
 });
 
@@ -20,7 +18,9 @@ export const createPartnerController = asyncHandler(async (req, res) => {
       .status(400)
       .json(new ApiResponse(400, null, "this Partner is already exist"));
   }
-  const newBranch = await Partners.create({ name, profitShare });
+  const newBranch = await (
+    await Partners.create({ name, profitShare })
+  ).populate("profitShare.category");
   res.json(new ApiResponse(201, newBranch, "created new partner successful"));
 });
 
@@ -47,29 +47,25 @@ export const updatePartnerController = asyncHandler(async (req, res, next) => {
   }
 
   if (Array.isArray(profitShare) && profitShare.length > 0) {
-    const incomingMap = new Map(
-      profitShare.map((p) => [p.radiologyCategory, p.value]),
-    );
+    const incomingMap = new Map(profitShare.map((p) => [p.category, p.value]));
 
     // Update existing categories
     partner.profitShare.forEach((p) => {
-      if (incomingMap.has(p.radiologyCategory?.toString())) {
-        p.value = incomingMap.get(p.radiologyCategory?.toString());
-        console.log("p.radiologyCategory", p.radiologyCategory);
-        incomingMap.delete(p.radiologyCategory?.toString());
+      if (incomingMap.has(p.category?.toString())) {
+        p.value = incomingMap.get(p.category?.toString());
+        console.log("p.radiologyCategory", p.category);
+        incomingMap.delete(p.category?.toString());
       }
     });
 
     // Whatever's left in incomingMap didn't exist before — add as new entries
-    incomingMap.forEach((value, radiologyCategory) => {
-      partner.profitShare.push({ radiologyCategory, value });
+    incomingMap.forEach((value, category) => {
+      partner.profitShare.push({ category, value });
     });
   }
 
   const updatedPartner = await partner.save();
-  const responseData = await updatedPartner.populate(
-    "profitShare.radiologyCategory",
-  );
+  const responseData = await updatedPartner.populate("profitShare.category");
 
   return res
     .status(200)

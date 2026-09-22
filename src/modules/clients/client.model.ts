@@ -8,12 +8,13 @@ const client = new mongoose.Schema({
     max: 120,
   },
   phoneNumber: {
-    type: Number,
+    type: String,
   },
   reservations: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "reservation",
+      _id: false,
     },
   ],
 });

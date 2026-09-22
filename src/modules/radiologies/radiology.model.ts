@@ -2,25 +2,11 @@ import mongoose from "mongoose";
 
 const radiologySchema = new mongoose.Schema(
   {
+    name: { type: String, required: true },
+    price: { type: Number, required: true },
     category: {
-      type: String,
-      require: true,
-      unique: true,
-    },
-    radiologies: {
-      type: [
-        {
-          name: {
-            type: String,
-            require: true,
-          },
-          price: {
-            type: Number,
-            require: true,
-          },
-        },
-      ],
-      require: false,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "category",
     },
   },
   { timestamps: true },

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import Radiologies from "../radiologies/radiology.model.js";
+import Reservations from "../reservations/reservation.model.js";
+import Category from "../categories/category.model.js";
 
 const branchSchema = new mongoose.Schema(
   {
@@ -8,12 +9,12 @@ const branchSchema = new mongoose.Schema(
     availableRadiology: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "radiology",
+        ref: "category",
         validate: {
           validator: async function (
             value: mongoose.Types.ObjectId,
           ): Promise<boolean> {
-            const category = await Radiologies.findById(value);
+            const category = await Category.findById(value);
             return !!category;
           },
           message: "Radiology category does not exist",
@@ -29,12 +30,23 @@ const branchSchema = new mongoose.Schema(
         },
         openTime: { type: Number, min: 0, max: 1439 },
         closeTime: { type: Number, min: 0, max: 1439 },
+        _id: false,
       },
     ],
     reservations: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "reservation",
+        validate: {
+          validator: async function (
+            value: mongoose.Types.ObjectId,
+          ): Promise<boolean> {
+            const reservation = await Reservations.findById(value);
+            return !!reservation;
+          },
+          message: "Radiology category does not exist",
+        },
+        _id: false,
       },
     ],
   },

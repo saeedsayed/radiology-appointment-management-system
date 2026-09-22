@@ -4,7 +4,9 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 import Branches from "./branch.model.js";
 
 export const getAllBranchesController = asyncHandler(async (req, res) => {
-  const branches = await Branches.find().populate("availableRadiology");
+  const branches = await Branches.find()
+    .populate("availableRadiology")
+    .populate("reservations");
   res.json(new ApiResponse(200, branches));
 });
 
