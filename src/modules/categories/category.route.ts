@@ -6,13 +6,14 @@ import {
   updateCategoryController,
 } from "./category.controller.js";
 import { validate } from "../../middlewares/validate.middleware.js";
+import { publicFilter } from "../../middlewares/public-filter.middleware.js";
 import { createCategorySchema } from "./category.schema.js";
 
 const router = express.Router();
 
 router
   .route("/")
-  .get(getAllCategoriesController)
+  .get(publicFilter(), getAllCategoriesController)
   .post(validate(createCategorySchema), createCategoryController);
 
 router

@@ -1,5 +1,6 @@
 import express from "express";
 import { validate } from "../../middlewares/validate.middleware.js";
+import { publicFilter } from "../../middlewares/public-filter.middleware.js";
 import {
   createRadiologyController,
   deleteRadiologyController,
@@ -12,7 +13,7 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(getAllRadiologiesController)
+  .get(publicFilter(), getAllRadiologiesController)
   .post(validate(createRadiologySchema), createRadiologyController);
 
 router
