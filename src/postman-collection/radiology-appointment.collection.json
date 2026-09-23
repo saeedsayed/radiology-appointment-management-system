@@ -463,7 +463,7 @@
     },
     {
       "name": "Radiologies",
-      "description": "CRUD for radiology exams. Each radiology belongs to a category.",
+      "description": "CRUD for radiology exams. Each radiology belongs to a category and has a price for every branch.",
       "item": [
         {
           "name": "Get All Radiologies",
@@ -511,7 +511,7 @@
                 { "key": "Content-Type", "value": "application/json; charset=utf-8" }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"_id\": \"665f1b3c4d5e6f7a8b9c0201\",\n      \"name\": \"Brain MRI\",\n      \"price\": 1500,\n      \"category\": {\n        \"_id\": \"665f1a2b3c4d5e6f7a8b9c01\",\n        \"name\": \"MRI\",\n        \"createdAt\": \"2026-01-10T08:15:30.120Z\",\n        \"updatedAt\": \"2026-01-10T08:15:30.120Z\",\n        \"__v\": 0\n      },\n      \"createdAt\": \"2026-01-10T09:00:11.330Z\",\n      \"updatedAt\": \"2026-01-10T09:00:11.330Z\",\n      \"__v\": 0\n    }\n  ]\n}"
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"_id\": \"665f1b3c4d5e6f7a8b9c0201\",\n      \"name\": \"Brain MRI\",\n      \"prices\": [{ \"branch\": { \"_id\": \"665f1c4d5e6f7a8b9c030100\", \"name\": \"Main Branch\", \"address\": \"12 Main Street, Cairo\", \"availableRadiology\": [\"665f1a2b3c4d5e6f7a8b9c01\"], \"workSchedule\": [{ \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 }], \"reservations\": [\"665f1e6f7a8b9c0401\"], \"createdAt\": \"2026-01-10T10:00:00.000Z\", \"updatedAt\": \"2026-01-18T08:00:00.000Z\", \"__v\": 0 }, \"price\": 1500 }],\n      \"category\": {\n        \"_id\": \"665f1a2b3c4d5e6f7a8b9c01\",\n        \"name\": \"MRI\",\n        \"createdAt\": \"2026-01-10T08:15:30.120Z\",\n        \"updatedAt\": \"2026-01-10T08:15:30.120Z\",\n        \"__v\": 0\n      },\n      \"createdAt\": \"2026-01-10T09:00:11.330Z\",\n      \"updatedAt\": \"2026-01-10T09:00:11.330Z\",\n      \"__v\": 0\n    }\n  ]\n}"
             },
             {
               "name": "Empty List",
@@ -546,9 +546,9 @@
                   "pm.test('Radiology created', () => {",
                   "  const json = pm.response.json();",
                   "  pm.expect(json.success).to.be.true;",
-                  "  pm.expect(json.message).to.eql('category created successfully');",
+                  "  pm.expect(json.message).to.eql('radiology created successfully');",
                   "  pm.expect(json.data).to.have.property('_id');",
-                  "  pm.expect(json.data.price).to.eql(1500);",
+                  "  pm.expect(json.data.prices[0].price).to.eql(1500);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -560,7 +560,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Brain MRI\",\n  \"price\": 1500,\n  \"category\": \"665f1a2b3c4d5e6f7a8b9c01\"\n}",
+              "raw": "{\n  \"name\": \"Brain MRI\",\n  \"prices\": [{ \"branch\": \"665f1c4d5e6f7a8b9c030100\", \"price\": 1500 }],\n  \"category\": \"665f1a2b3c4d5e6f7a8b9c01\"\n}",
               "options": { "raw": { "language": "json" } }
             },
             "url": {
@@ -568,7 +568,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["radiologies"]
             },
-            "description": "Body:\n- `name` (string, required, min 1)\n- `price` (number, required, positive)\n- `category` (string, required, valid category ObjectId)"
+            "description": "Body:\n- `name` (string, required, min 1)\n- `prices` (array, required — one { branch, price } entry per branch; must cover every branch)\n- `category` (string, required, valid category ObjectId)"
           },
           "response": [
             {
@@ -578,7 +578,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"Brain MRI\",\n  \"price\": 1500,\n  \"category\": \"665f1a2b3c4d5e6f7a8b9c01\"\n}",
+              "raw": "{\n  \"name\": \"Brain MRI\",\n  \"prices\": [{ \"branch\": \"665f1c4d5e6f7a8b9c030100\", \"price\": 1500 }],\n  \"category\": \"665f1a2b3c4d5e6f7a8b9c01\"\n}",
                   "options": { "raw": { "language": "json" } }
                 },
                 "url": {
@@ -594,7 +594,7 @@
                 { "key": "Content-Type", "value": "application/json; charset=utf-8" }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"category created successfully\",\n  \"data\": {\n    \"_id\": \"665f1b3c4d5e6f7a8b9c0201\",\n    \"name\": \"Brain MRI\",\n    \"price\": 1500,\n    \"category\": {\n      \"_id\": \"665f1a2b3c4d5e6f7a8b9c01\",\n      \"name\": \"MRI\",\n      \"createdAt\": \"2026-01-10T08:15:30.120Z\",\n      \"updatedAt\": \"2026-01-10T08:15:30.120Z\",\n      \"__v\": 0\n    },\n    \"createdAt\": \"2026-01-10T09:00:11.330Z\",\n    \"updatedAt\": \"2026-01-10T09:00:11.330Z\",\n    \"__v\": 0\n  }\n}"
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"radiology created successfully\",\n  \"data\": {\n    \"_id\": \"665f1b3c4d5e6f7a8b9c0201\",\n    \"name\": \"Brain MRI\",\n    \"prices\": [{ \"branch\": { \"_id\": \"665f1c4d5e6f7a8b9c030100\", \"name\": \"Main Branch\", \"address\": \"12 Main Street, Cairo\", \"availableRadiology\": [\"665f1a2b3c4d5e6f7a8b9c01\"], \"workSchedule\": [{ \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 }], \"reservations\": [\"665f1e6f7a8b9c0401\"], \"createdAt\": \"2026-01-10T10:00:00.000Z\", \"updatedAt\": \"2026-01-18T08:00:00.000Z\", \"__v\": 0 }, \"price\": 1500 }],\n    \"category\": {\n      \"_id\": \"665f1a2b3c4d5e6f7a8b9c01\",\n      \"name\": \"MRI\",\n      \"createdAt\": \"2026-01-10T08:15:30.120Z\",\n      \"updatedAt\": \"2026-01-10T08:15:30.120Z\",\n      \"__v\": 0\n    },\n    \"createdAt\": \"2026-01-10T09:00:11.330Z\",\n    \"updatedAt\": \"2026-01-10T09:00:11.330Z\",\n    \"__v\": 0\n  }\n}"
             },
             {
               "name": "Validation Error (invalid payload)",
@@ -603,7 +603,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"\",\n  \"price\": -5,\n  \"category\": \"bad-id\"\n}",
+                  "raw": "{\n  \"name\": \"\",\n  \"prices\": [{ \"branch\": \"bad-id\", \"price\": -5 }],\n  \"category\": \"bad-id\"\n}",
                   "options": { "raw": { "language": "json" } }
                 },
                 "url": {
@@ -619,7 +619,7 @@
                 { "key": "Content-Type", "value": "application/json; charset=utf-8" }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": false,\n  \"statusCode\": 400,\n  \"message\": \"Name cannot be empty & Price must be a positive number & invalid category id\",\n  \"errors\": [\n    \"Name cannot be empty\",\n    \"Price must be a positive number\",\n    \"invalid category id\"\n  ]\n}"
+              "body": "{\n  \"success\": false,\n  \"statusCode\": 400,\n  \"message\": \"Name cannot be empty & invalid branch id & Price must be a positive number & invalid category id\",\n  \"errors\": [\n    \"Name cannot be empty\",\n    \"invalid branch id\",\n    \"Price must be a positive number\",\n    \"invalid category id\"\n  ]\n}"
             }
           ]
         },
@@ -633,8 +633,8 @@
                   "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
                   "pm.test('Radiology updated', () => {",
                   "  const json = pm.response.json();",
-                  "  pm.expect(json.message).to.eql('category updated successfully');",
-                  "  pm.expect(json.data.price).to.eql(1750);",
+                  "  pm.expect(json.message).to.eql('radiology updated successfully');",
+                  "  pm.expect(json.data.prices[0].price).to.eql(1750);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -646,7 +646,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"price\": 1750\n}",
+              "raw": "{\n  \"prices\": [{ \"branch\": \"665f1c4d5e6f7a8b9c030100\", \"price\": 1750 }]\n}",
               "options": { "raw": { "language": "json" } }
             },
             "url": {
@@ -655,7 +655,7 @@
               "path": ["radiologies", ":id"],
               "variable": [{ "key": "id", "value": "665f1b3c4d5e6f7a8b9c0201" }]
             },
-            "description": "Partial update — send any fields present on the radiology model (`name`, `price`, `category`)."
+            "description": "Partial update — send any fields present on the radiology model (`name`, `prices`, `category`). When `prices` is sent it must include a price for every branch."
           },
           "response": [
             {
@@ -665,7 +665,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"price\": 1750\n}",
+                  "raw": "{\n  \"prices\": [{ \"branch\": \"665f1c4d5e6f7a8b9c030100\", \"price\": 1750 }]\n}",
                   "options": { "raw": { "language": "json" } }
                 },
                 "url": {
@@ -682,7 +682,7 @@
                 { "key": "Content-Type", "value": "application/json; charset=utf-8" }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"category updated successfully\",\n  \"data\": {\n    \"_id\": \"665f1b3c4d5e6f7a8b9c0201\",\n    \"name\": \"Brain MRI\",\n    \"price\": 1750,\n    \"category\": {\n      \"_id\": \"665f1a2b3c4d5e6f7a8b9c01\",\n      \"name\": \"MRI\",\n      \"createdAt\": \"2026-01-10T08:15:30.120Z\",\n      \"updatedAt\": \"2026-01-10T08:15:30.120Z\",\n      \"__v\": 0\n    },\n    \"createdAt\": \"2026-01-10T09:00:11.330Z\",\n    \"updatedAt\": \"2026-01-12T11:20:00.910Z\",\n    \"__v\": 0\n  }\n}"
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"radiology updated successfully\",\n  \"data\": {\n    \"_id\": \"665f1b3c4d5e6f7a8b9c0201\",\n    \"name\": \"Brain MRI\",\n    \"prices\": [{ \"branch\": { \"_id\": \"665f1c4d5e6f7a8b9c030100\", \"name\": \"Main Branch\", \"address\": \"12 Main Street, Cairo\", \"availableRadiology\": [\"665f1a2b3c4d5e6f7a8b9c01\"], \"workSchedule\": [{ \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 }], \"reservations\": [\"665f1e6f7a8b9c0401\"], \"createdAt\": \"2026-01-10T10:00:00.000Z\", \"updatedAt\": \"2026-01-18T08:00:00.000Z\", \"__v\": 0 }, \"price\": 1750 }],\n    \"category\": {\n      \"_id\": \"665f1a2b3c4d5e6f7a8b9c01\",\n      \"name\": \"MRI\",\n      \"createdAt\": \"2026-01-10T08:15:30.120Z\",\n      \"updatedAt\": \"2026-01-10T08:15:30.120Z\",\n      \"__v\": 0\n    },\n    \"createdAt\": \"2026-01-10T09:00:11.330Z\",\n    \"updatedAt\": \"2026-01-12T11:20:00.910Z\",\n    \"__v\": 0\n  }\n}"
             },
             {
               "name": "Invalid ID",
@@ -691,7 +691,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"price\": 1750\n}",
+                  "raw": "{\n  \"prices\": [{ \"branch\": \"665f1c4d5e6f7a8b9c030100\", \"price\": 1750 }]\n}",
                   "options": { "raw": { "language": "json" } }
                 },
                 "url": {
@@ -717,7 +717,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"price\": 1750\n}",
+                  "raw": "{\n  \"prices\": [{ \"branch\": \"665f1c4d5e6f7a8b9c030100\", \"price\": 1750 }]\n}",
                   "options": { "raw": { "language": "json" } }
                 },
                 "url": {
@@ -734,7 +734,7 @@
                 { "key": "Content-Type", "value": "application/json; charset=utf-8" }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"category updated successfully\",\n  \"data\": null\n}"
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"radiology updated successfully\",\n  \"data\": null\n}"
             }
           ]
         },
@@ -878,7 +878,7 @@
                 { "key": "Content-Type", "value": "application/json; charset=utf-8" }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"_id\": \"665f1c4d5e6f7a8b9c0301\",\n      \"name\": \"Main Branch\",\n      \"address\": \"12 Main Street, Cairo\",\n      \"availableRadiology\": [\n        {\n          \"_id\": \"665f1a2b3c4d5e6f7a8b9c01\",\n          \"name\": \"MRI\",\n          \"createdAt\": \"2026-01-10T08:15:30.120Z\",\n          \"updatedAt\": \"2026-01-10T08:15:30.120Z\",\n          \"__v\": 0\n        }\n      ],\n      \"workSchedule\": [\n        { \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 },\n        { \"weekday\": 1, \"openTime\": 480, \"closeTime\": 1020 }\n      ],\n      \"reservations\": [\n        \"665f1e6f7a8b9c0401\"\n      ],\n      \"createdAt\": \"2026-01-10T10:00:00.000Z\",\n      \"updatedAt\": \"2026-01-15T12:30:00.450Z\",\n      \"__v\": 0\n    }\n  ]\n}"
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"_id\": \"665f1c4d5e6f7a8b9c030100\",\n      \"name\": \"Main Branch\",\n      \"address\": \"12 Main Street, Cairo\",\n      \"availableRadiology\": [\n        {\n          \"_id\": \"665f1a2b3c4d5e6f7a8b9c01\",\n          \"name\": \"MRI\",\n          \"createdAt\": \"2026-01-10T08:15:30.120Z\",\n          \"updatedAt\": \"2026-01-10T08:15:30.120Z\",\n          \"__v\": 0\n        }\n      ],\n      \"workSchedule\": [\n        { \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 },\n        { \"weekday\": 1, \"openTime\": 480, \"closeTime\": 1020 }\n      ],\n      \"reservations\": [\n        \"665f1e6f7a8b9c0401\"\n      ],\n      \"createdAt\": \"2026-01-10T10:00:00.000Z\",\n      \"updatedAt\": \"2026-01-15T12:30:00.450Z\",\n      \"__v\": 0\n    }\n  ]\n}"
             },
             {
               "name": "Empty List",
@@ -959,7 +959,7 @@
                 { "key": "Content-Type", "value": "application/json; charset=utf-8" }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"statusCode\": 201,\n  \"message\": \"created new branch successful\",\n  \"data\": {\n    \"_id\": \"665f1c4d5e6f7a8b9c0301\",\n    \"name\": \"Main Branch\",\n    \"address\": \"12 Main Street, Cairo\",\n    \"availableRadiology\": [],\n    \"workSchedule\": [],\n    \"reservations\": [],\n    \"createdAt\": \"2026-01-10T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-10T10:00:00.000Z\",\n    \"__v\": 0\n  }\n}"
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 201,\n  \"message\": \"created new branch successful\",\n  \"data\": {\n    \"_id\": \"665f1c4d5e6f7a8b9c030100\",\n    \"name\": \"Main Branch\",\n    \"address\": \"12 Main Street, Cairo\",\n    \"availableRadiology\": [],\n    \"workSchedule\": [],\n    \"reservations\": [],\n    \"createdAt\": \"2026-01-10T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-10T10:00:00.000Z\",\n    \"__v\": 0\n  }\n}"
             },
             {
               "name": "Already Exists",
@@ -1043,7 +1043,7 @@
               "raw": "{{baseUrl}}/branches/:id",
               "host": ["{{baseUrl}}"],
               "path": ["branches", ":id"],
-              "variable": [{ "key": "id", "value": "665f1c4d5e6f7a8b9c0301" }]
+              "variable": [{ "key": "id", "value": "665f1c4d5e6f7a8b9c030100" }]
             },
             "description": "Accepts any branch fields in the body (`name`, `address`, `availableRadiology`, `workSchedule`, `reservations`)."
           },
@@ -1062,7 +1062,7 @@
                   "raw": "{{baseUrl}}/branches/:id",
                   "host": ["{{baseUrl}}"],
                   "path": ["branches", ":id"],
-                  "variable": [{ "key": "id", "value": "665f1c4d5e6f7a8b9c0301" }]
+                  "variable": [{ "key": "id", "value": "665f1c4d5e6f7a8b9c030100" }]
                 }
               },
               "status": "OK",
@@ -1072,7 +1072,7 @@
                 { "key": "Content-Type", "value": "application/json; charset=utf-8" }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Branch updated successfully\",\n  \"data\": {\n    \"_id\": \"665f1c4d5e6f7a8b9c0301\",\n    \"name\": \"Main Branch - New Cairo\",\n    \"address\": \"45 New Cairo Ave\",\n    \"availableRadiology\": [\n      {\n        \"_id\": \"665f1a2b3c4d5e6f7a8b9c01\",\n        \"name\": \"MRI\",\n        \"createdAt\": \"2026-01-10T08:15:30.120Z\",\n        \"updatedAt\": \"2026-01-10T08:15:30.120Z\",\n        \"__v\": 0\n      }\n    ],\n    \"workSchedule\": [\n      { \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 }\n    ],\n    \"reservations\": [],\n    \"createdAt\": \"2026-01-10T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-16T09:12:44.100Z\",\n    \"__v\": 0\n  }\n}"
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Branch updated successfully\",\n  \"data\": {\n    \"_id\": \"665f1c4d5e6f7a8b9c030100\",\n    \"name\": \"Main Branch - New Cairo\",\n    \"address\": \"45 New Cairo Ave\",\n    \"availableRadiology\": [\n      {\n        \"_id\": \"665f1a2b3c4d5e6f7a8b9c01\",\n        \"name\": \"MRI\",\n        \"createdAt\": \"2026-01-10T08:15:30.120Z\",\n        \"updatedAt\": \"2026-01-10T08:15:30.120Z\",\n        \"__v\": 0\n      }\n    ],\n    \"workSchedule\": [\n      { \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 }\n    ],\n    \"reservations\": [],\n    \"createdAt\": \"2026-01-10T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-16T09:12:44.100Z\",\n    \"__v\": 0\n  }\n}"
             },
             {
               "name": "Invalid ID",
@@ -1148,7 +1148,7 @@
               "raw": "{{baseUrl}}/branches/:id",
               "host": ["{{baseUrl}}"],
               "path": ["branches", ":id"],
-              "variable": [{ "key": "id", "value": "665f1c4d5e6f7a8b9c0301" }]
+              "variable": [{ "key": "id", "value": "665f1c4d5e6f7a8b9c030100" }]
             }
           },
           "response": [
@@ -1161,7 +1161,7 @@
                   "raw": "{{baseUrl}}/branches/:id",
                   "host": ["{{baseUrl}}"],
                   "path": ["branches", ":id"],
-                  "variable": [{ "key": "id", "value": "665f1c4d5e6f7a8b9c0301" }]
+                  "variable": [{ "key": "id", "value": "665f1c4d5e6f7a8b9c030100" }]
                 }
               },
               "status": "No Content",
@@ -1659,7 +1659,7 @@
                 { "key": "Content-Type", "value": "application/json; charset=utf-8" }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"_id\": \"665f1f7a8b9c0501\",\n      \"name\": \"Ahmed Ali\",\n      \"age\": 34,\n      \"phoneNumber\": \"+201001112233\",\n      \"reservations\": [\n        {\n          \"_id\": \"665f1e6f7a8b9c0401\",\n          \"state\": \"pending\",\n          \"date\": \"2026-01-20T11:00:00.000Z\",\n          \"notes\": \"fasting required\",\n          \"branch\": \"665f1c4d5e6f7a8b9c0301\",\n          \"client\": \"665f1f7a8b9c0501\",\n          \"radiologies\": [\"665f1b3c4d5e6f7a8b9c0201\"],\n          \"fromPartner\": \"665f1d5e6f7a8b9c0401\",\n          \"createdAt\": \"2026-01-18T08:00:00.000Z\",\n          \"updatedAt\": \"2026-01-18T08:00:00.000Z\",\n          \"__v\": 0\n        }\n      ]\n    }\n  ]\n}"
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"_id\": \"665f1f7a8b9c0501\",\n      \"name\": \"Ahmed Ali\",\n      \"age\": 34,\n      \"phoneNumber\": \"+201001112233\",\n      \"reservations\": [\n        {\n          \"_id\": \"665f1e6f7a8b9c0401\",\n          \"state\": \"pending\",\n          \"date\": \"2026-01-20T11:00:00.000Z\",\n          \"notes\": \"fasting required\",\n          \"branch\": \"665f1c4d5e6f7a8b9c030100\",\n          \"client\": \"665f1f7a8b9c0501\",\n          \"radiologies\": [\"665f1b3c4d5e6f7a8b9c0201\"],\n          \"fromPartner\": \"665f1d5e6f7a8b9c0401\",\n          \"createdAt\": \"2026-01-18T08:00:00.000Z\",\n          \"updatedAt\": \"2026-01-18T08:00:00.000Z\",\n          \"__v\": 0\n        }\n      ]\n    }\n  ]\n}"
             },
             {
               "name": "Empty List",
@@ -1736,7 +1736,7 @@
                 { "key": "Content-Type", "value": "application/json; charset=utf-8" }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"_id\": \"665f1e6f7a8b9c0401\",\n      \"state\": \"pending\",\n      \"date\": \"2026-01-20T11:00:00.000Z\",\n      \"notes\": \"fasting required\",\n      \"client\": {\n        \"_id\": \"665f1f7a8b9c0501\",\n        \"name\": \"Ahmed Ali\",\n        \"age\": 34,\n        \"phoneNumber\": \"+201001112233\",\n        \"reservations\": [\"665f1e6f7a8b9c0401\"]\n      },\n      \"branch\": {\n        \"_id\": \"665f1c4d5e6f7a8b9c0301\",\n        \"name\": \"Main Branch\",\n        \"address\": \"12 Main Street, Cairo\",\n        \"availableRadiology\": [\"665f1a2b3c4d5e6f7a8b9c01\"],\n        \"workSchedule\": [\n          { \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 }\n        ],\n        \"reservations\": [\"665f1e6f7a8b9c0401\"],\n        \"createdAt\": \"2026-01-10T10:00:00.000Z\",\n        \"updatedAt\": \"2026-01-18T08:00:00.000Z\",\n        \"__v\": 0\n      },\n      \"radiologies\": [\n        {\n          \"_id\": \"665f1b3c4d5e6f7a8b9c0201\",\n          \"name\": \"Brain MRI\",\n          \"price\": 1750,\n          \"category\": \"665f1a2b3c4d5e6f7a8b9c01\",\n          \"createdAt\": \"2026-01-10T09:00:11.330Z\",\n          \"updatedAt\": \"2026-01-12T11:20:00.910Z\",\n          \"__v\": 0\n        }\n      ],\n      \"fromPartner\": {\n        \"_id\": \"665f1d5e6f7a8b9c0401\",\n        \"name\": \"Health Insurance Co.\",\n        \"clients\": [],\n        \"profitShare\": [\n          {\n            \"category\": \"665f1a2b3c4d5e6f7a8b9c01\",\n            \"value\": 35,\n            \"_id\": \"665f1d5e6f7a8b9c0402\"\n          }\n        ],\n        \"createdAt\": \"2026-01-11T07:45:00.000Z\",\n        \"updatedAt\": \"2026-01-17T14:05:22.000Z\",\n        \"__v\": 0\n      },\n      \"createdAt\": \"2026-01-18T08:00:00.000Z\",\n      \"updatedAt\": \"2026-01-18T08:00:00.000Z\",\n      \"__v\": 0\n    }\n  ]\n}"
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"_id\": \"665f1e6f7a8b9c0401\",\n      \"state\": \"pending\",\n      \"date\": \"2026-01-20T11:00:00.000Z\",\n      \"notes\": \"fasting required\",\n      \"client\": {\n        \"_id\": \"665f1f7a8b9c0501\",\n        \"name\": \"Ahmed Ali\",\n        \"age\": 34,\n        \"phoneNumber\": \"+201001112233\",\n        \"reservations\": [\"665f1e6f7a8b9c0401\"]\n      },\n      \"branch\": {\n        \"_id\": \"665f1c4d5e6f7a8b9c030100\",\n        \"name\": \"Main Branch\",\n        \"address\": \"12 Main Street, Cairo\",\n        \"availableRadiology\": [\"665f1a2b3c4d5e6f7a8b9c01\"],\n        \"workSchedule\": [\n          { \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 }\n        ],\n        \"reservations\": [\"665f1e6f7a8b9c0401\"],\n        \"createdAt\": \"2026-01-10T10:00:00.000Z\",\n        \"updatedAt\": \"2026-01-18T08:00:00.000Z\",\n        \"__v\": 0\n      },\n      \"radiologies\": [\n        {\n          \"_id\": \"665f1b3c4d5e6f7a8b9c0201\",\n          \"name\": \"Brain MRI\",\n          \"prices\": [{ \"branch\": { \"_id\": \"665f1c4d5e6f7a8b9c030100\", \"name\": \"Main Branch\", \"address\": \"12 Main Street, Cairo\", \"availableRadiology\": [\"665f1a2b3c4d5e6f7a8b9c01\"], \"workSchedule\": [{ \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 }], \"reservations\": [\"665f1e6f7a8b9c0401\"], \"createdAt\": \"2026-01-10T10:00:00.000Z\", \"updatedAt\": \"2026-01-18T08:00:00.000Z\", \"__v\": 0 }, \"price\": 1750 }],\n          \"category\": \"665f1a2b3c4d5e6f7a8b9c01\",\n          \"createdAt\": \"2026-01-10T09:00:11.330Z\",\n          \"updatedAt\": \"2026-01-12T11:20:00.910Z\",\n          \"__v\": 0\n        }\n      ],\n      \"fromPartner\": {\n        \"_id\": \"665f1d5e6f7a8b9c0401\",\n        \"name\": \"Health Insurance Co.\",\n        \"clients\": [],\n        \"profitShare\": [\n          {\n            \"category\": \"665f1a2b3c4d5e6f7a8b9c01\",\n            \"value\": 35,\n            \"_id\": \"665f1d5e6f7a8b9c0402\"\n          }\n        ],\n        \"createdAt\": \"2026-01-11T07:45:00.000Z\",\n        \"updatedAt\": \"2026-01-17T14:05:22.000Z\",\n        \"__v\": 0\n      },\n      \"createdAt\": \"2026-01-18T08:00:00.000Z\",\n      \"updatedAt\": \"2026-01-18T08:00:00.000Z\",\n      \"__v\": 0\n    }\n  ]\n}"
             },
             {
               "name": "Empty List",
@@ -1786,7 +1786,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"date\": \"2026-01-20T11:00:00.000Z\",\n  \"notes\": \"fasting required\",\n  \"branch\": \"665f1c4d5e6f7a8b9c0301\",\n  \"radiologies\": [\n    \"665f1b3c4d5e6f7a8b9c0201\"\n  ],\n  \"fromPartner\": \"665f1d5e6f7a8b9c0401\",\n  \"clientName\": \"Ahmed Ali\",\n  \"clientAge\": 34,\n  \"clientPhone\": \"+201001112233\"\n}",
+              "raw": "{\n  \"date\": \"2026-01-20T11:00:00.000Z\",\n  \"notes\": \"fasting required\",\n  \"branch\": \"665f1c4d5e6f7a8b9c030100\",\n  \"radiologies\": [\n    \"665f1b3c4d5e6f7a8b9c0201\"\n  ],\n  \"fromPartner\": \"665f1d5e6f7a8b9c0401\",\n  \"clientName\": \"Ahmed Ali\",\n  \"clientAge\": 34,\n  \"clientPhone\": \"+201001112233\"\n}",
               "options": { "raw": { "language": "json" } }
             },
             "url": {
@@ -1804,7 +1804,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"date\": \"2026-01-20T11:00:00.000Z\",\n  \"notes\": \"fasting required\",\n  \"branch\": \"665f1c4d5e6f7a8b9c0301\",\n  \"radiologies\": [\n    \"665f1b3c4d5e6f7a8b9c0201\"\n  ],\n  \"fromPartner\": \"665f1d5e6f7a8b9c0401\",\n  \"clientName\": \"Ahmed Ali\",\n  \"clientAge\": 34,\n  \"clientPhone\": \"+201001112233\"\n}",
+                  "raw": "{\n  \"date\": \"2026-01-20T11:00:00.000Z\",\n  \"notes\": \"fasting required\",\n  \"branch\": \"665f1c4d5e6f7a8b9c030100\",\n  \"radiologies\": [\n    \"665f1b3c4d5e6f7a8b9c0201\"\n  ],\n  \"fromPartner\": \"665f1d5e6f7a8b9c0401\",\n  \"clientName\": \"Ahmed Ali\",\n  \"clientAge\": 34,\n  \"clientPhone\": \"+201001112233\"\n}",
                   "options": { "raw": { "language": "json" } }
                 },
                 "url": {
@@ -1820,7 +1820,7 @@
                 { "key": "Content-Type", "value": "application/json; charset=utf-8" }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"statusCode\": 201,\n  \"message\": \"Success\",\n  \"data\": {\n    \"_id\": \"665f1e6f7a8b9c0401\",\n    \"state\": \"pending\",\n    \"date\": \"2026-01-20T11:00:00.000Z\",\n    \"notes\": \"fasting required\",\n    \"client\": {\n      \"_id\": \"665f1f7a8b9c0501\",\n      \"name\": \"Ahmed Ali\",\n      \"age\": 34,\n      \"phoneNumber\": \"+201001112233\",\n      \"reservations\": [\"665f1e6f7a8b9c0401\"]\n    },\n    \"branch\": {\n      \"_id\": \"665f1c4d5e6f7a8b9c0301\",\n      \"name\": \"Main Branch\",\n      \"address\": \"12 Main Street, Cairo\",\n      \"availableRadiology\": [\"665f1a2b3c4d5e6f7a8b9c01\"],\n      \"workSchedule\": [\n        { \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 }\n      ],\n      \"reservations\": [\"665f1e6f7a8b9c0401\"],\n      \"createdAt\": \"2026-01-10T10:00:00.000Z\",\n      \"updatedAt\": \"2026-01-18T08:00:00.000Z\",\n      \"__v\": 0\n    },\n    \"radiologies\": [\n      {\n        \"_id\": \"665f1b3c4d5e6f7a8b9c0201\",\n        \"name\": \"Brain MRI\",\n        \"price\": 1750,\n        \"category\": \"665f1a2b3c4d5e6f7a8b9c01\",\n        \"createdAt\": \"2026-01-10T09:00:11.330Z\",\n        \"updatedAt\": \"2026-01-12T11:20:00.910Z\",\n        \"__v\": 0\n      }\n    ],\n    \"fromPartner\": {\n      \"_id\": \"665f1d5e6f7a8b9c0401\",\n      \"name\": \"Health Insurance Co.\",\n      \"clients\": [\"665f1f7a8b9c0501\"],\n      \"profitShare\": [\n        {\n          \"category\": \"665f1a2b3c4d5e6f7a8b9c01\",\n          \"value\": 35,\n          \"_id\": \"665f1d5e6f7a8b9c0402\"\n        }\n      ],\n      \"createdAt\": \"2026-01-11T07:45:00.000Z\",\n      \"updatedAt\": \"2026-01-17T14:05:22.000Z\",\n      \"__v\": 0\n    },\n    \"createdAt\": \"2026-01-18T08:00:00.000Z\",\n    \"updatedAt\": \"2026-01-18T08:00:00.000Z\",\n    \"__v\": 0\n  }\n}"
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 201,\n  \"message\": \"Success\",\n  \"data\": {\n    \"_id\": \"665f1e6f7a8b9c0401\",\n    \"state\": \"pending\",\n    \"date\": \"2026-01-20T11:00:00.000Z\",\n    \"notes\": \"fasting required\",\n    \"client\": {\n      \"_id\": \"665f1f7a8b9c0501\",\n      \"name\": \"Ahmed Ali\",\n      \"age\": 34,\n      \"phoneNumber\": \"+201001112233\",\n      \"reservations\": [\"665f1e6f7a8b9c0401\"]\n    },\n    \"branch\": {\n      \"_id\": \"665f1c4d5e6f7a8b9c030100\",\n      \"name\": \"Main Branch\",\n      \"address\": \"12 Main Street, Cairo\",\n      \"availableRadiology\": [\"665f1a2b3c4d5e6f7a8b9c01\"],\n      \"workSchedule\": [\n        { \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 }\n      ],\n      \"reservations\": [\"665f1e6f7a8b9c0401\"],\n      \"createdAt\": \"2026-01-10T10:00:00.000Z\",\n      \"updatedAt\": \"2026-01-18T08:00:00.000Z\",\n      \"__v\": 0\n    },\n    \"radiologies\": [\n      {\n        \"_id\": \"665f1b3c4d5e6f7a8b9c0201\",\n        \"name\": \"Brain MRI\",\n        \"prices\": [{ \"branch\": { \"_id\": \"665f1c4d5e6f7a8b9c030100\", \"name\": \"Main Branch\", \"address\": \"12 Main Street, Cairo\", \"availableRadiology\": [\"665f1a2b3c4d5e6f7a8b9c01\"], \"workSchedule\": [{ \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 }], \"reservations\": [\"665f1e6f7a8b9c0401\"], \"createdAt\": \"2026-01-10T10:00:00.000Z\", \"updatedAt\": \"2026-01-18T08:00:00.000Z\", \"__v\": 0 }, \"price\": 1750 }],\n        \"category\": \"665f1a2b3c4d5e6f7a8b9c01\",\n        \"createdAt\": \"2026-01-10T09:00:11.330Z\",\n        \"updatedAt\": \"2026-01-12T11:20:00.910Z\",\n        \"__v\": 0\n      }\n    ],\n    \"fromPartner\": {\n      \"_id\": \"665f1d5e6f7a8b9c0401\",\n      \"name\": \"Health Insurance Co.\",\n      \"clients\": [\"665f1f7a8b9c0501\"],\n      \"profitShare\": [\n        {\n          \"category\": \"665f1a2b3c4d5e6f7a8b9c01\",\n          \"value\": 35,\n          \"_id\": \"665f1d5e6f7a8b9c0402\"\n        }\n      ],\n      \"createdAt\": \"2026-01-11T07:45:00.000Z\",\n      \"updatedAt\": \"2026-01-17T14:05:22.000Z\",\n      \"__v\": 0\n    },\n    \"createdAt\": \"2026-01-18T08:00:00.000Z\",\n    \"updatedAt\": \"2026-01-18T08:00:00.000Z\",\n    \"__v\": 0\n  }\n}"
             },
             {
               "name": "Validation Error (missing/invalid fields)",
@@ -1933,7 +1933,7 @@
                 { "key": "Content-Type", "value": "application/json; charset=utf-8" }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Reservation state updated successfully\",\n  \"data\": {\n    \"_id\": \"665f1e6f7a8b9c0401\",\n    \"state\": \"complete\",\n    \"date\": \"2026-01-20T11:00:00.000Z\",\n    \"notes\": \"fasting required\",\n    \"client\": {\n      \"_id\": \"665f1f7a8b9c0501\",\n      \"name\": \"Ahmed Ali\",\n      \"age\": 34,\n      \"phoneNumber\": \"+201001112233\",\n      \"reservations\": [\"665f1e6f7a8b9c0401\"]\n    },\n    \"branch\": {\n      \"_id\": \"665f1c4d5e6f7a8b9c0301\",\n      \"name\": \"Main Branch\",\n      \"address\": \"12 Main Street, Cairo\",\n      \"availableRadiology\": [\"665f1a2b3c4d5e6f7a8b9c01\"],\n      \"workSchedule\": [\n        { \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 }\n      ],\n      \"reservations\": [\"665f1e6f7a8b9c0401\"],\n      \"createdAt\": \"2026-01-10T10:00:00.000Z\",\n      \"updatedAt\": \"2026-01-18T08:00:00.000Z\",\n      \"__v\": 0\n    },\n    \"radiologies\": [\n      {\n        \"_id\": \"665f1b3c4d5e6f7a8b9c0201\",\n        \"name\": \"Brain MRI\",\n        \"price\": 1750,\n        \"category\": \"665f1a2b3c4d5e6f7a8b9c01\",\n        \"createdAt\": \"2026-01-10T09:00:11.330Z\",\n        \"updatedAt\": \"2026-01-12T11:20:00.910Z\",\n        \"__v\": 0\n      }\n    ],\n    \"fromPartner\": {\n      \"_id\": \"665f1d5e6f7a8b9c0401\",\n      \"name\": \"Health Insurance Co.\",\n      \"clients\": [\"665f1f7a8b9c0501\"],\n      \"profitShare\": [\n        {\n          \"category\": \"665f1a2b3c4d5e6f7a8b9c01\",\n          \"value\": 35,\n          \"_id\": \"665f1d5e6f7a8b9c0402\"\n        }\n      ],\n      \"createdAt\": \"2026-01-11T07:45:00.000Z\",\n      \"updatedAt\": \"2026-01-17T14:05:22.000Z\",\n      \"__v\": 0\n    },\n    \"createdAt\": \"2026-01-18T08:00:00.000Z\",\n    \"updatedAt\": \"2026-01-20T13:45:10.250Z\",\n    \"__v\": 0\n  }\n}"
+              "body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Reservation state updated successfully\",\n  \"data\": {\n    \"_id\": \"665f1e6f7a8b9c0401\",\n    \"state\": \"complete\",\n    \"date\": \"2026-01-20T11:00:00.000Z\",\n    \"notes\": \"fasting required\",\n    \"client\": {\n      \"_id\": \"665f1f7a8b9c0501\",\n      \"name\": \"Ahmed Ali\",\n      \"age\": 34,\n      \"phoneNumber\": \"+201001112233\",\n      \"reservations\": [\"665f1e6f7a8b9c0401\"]\n    },\n    \"branch\": {\n      \"_id\": \"665f1c4d5e6f7a8b9c030100\",\n      \"name\": \"Main Branch\",\n      \"address\": \"12 Main Street, Cairo\",\n      \"availableRadiology\": [\"665f1a2b3c4d5e6f7a8b9c01\"],\n      \"workSchedule\": [\n        { \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 }\n      ],\n      \"reservations\": [\"665f1e6f7a8b9c0401\"],\n      \"createdAt\": \"2026-01-10T10:00:00.000Z\",\n      \"updatedAt\": \"2026-01-18T08:00:00.000Z\",\n      \"__v\": 0\n    },\n    \"radiologies\": [\n      {\n        \"_id\": \"665f1b3c4d5e6f7a8b9c0201\",\n        \"name\": \"Brain MRI\",\n        \"prices\": [{ \"branch\": { \"_id\": \"665f1c4d5e6f7a8b9c030100\", \"name\": \"Main Branch\", \"address\": \"12 Main Street, Cairo\", \"availableRadiology\": [\"665f1a2b3c4d5e6f7a8b9c01\"], \"workSchedule\": [{ \"weekday\": 0, \"openTime\": 480, \"closeTime\": 1020 }], \"reservations\": [\"665f1e6f7a8b9c0401\"], \"createdAt\": \"2026-01-10T10:00:00.000Z\", \"updatedAt\": \"2026-01-18T08:00:00.000Z\", \"__v\": 0 }, \"price\": 1750 }],\n        \"category\": \"665f1a2b3c4d5e6f7a8b9c01\",\n        \"createdAt\": \"2026-01-10T09:00:11.330Z\",\n        \"updatedAt\": \"2026-01-12T11:20:00.910Z\",\n        \"__v\": 0\n      }\n    ],\n    \"fromPartner\": {\n      \"_id\": \"665f1d5e6f7a8b9c0401\",\n      \"name\": \"Health Insurance Co.\",\n      \"clients\": [\"665f1f7a8b9c0501\"],\n      \"profitShare\": [\n        {\n          \"category\": \"665f1a2b3c4d5e6f7a8b9c01\",\n          \"value\": 35,\n          \"_id\": \"665f1d5e6f7a8b9c0402\"\n        }\n      ],\n      \"createdAt\": \"2026-01-11T07:45:00.000Z\",\n      \"updatedAt\": \"2026-01-17T14:05:22.000Z\",\n      \"__v\": 0\n    },\n    \"createdAt\": \"2026-01-18T08:00:00.000Z\",\n    \"updatedAt\": \"2026-01-20T13:45:10.250Z\",\n    \"__v\": 0\n  }\n}"
             },
             {
               "name": "Invalid ID",

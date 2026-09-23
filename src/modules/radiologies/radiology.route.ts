@@ -7,7 +7,10 @@ import {
   getAllRadiologiesController,
   updateRadiologyController,
 } from "./radiology.controller.js";
-import { createRadiologySchema } from "./radiology.schema.js";
+import {
+  createRadiologySchema,
+  updateRadiologySchema,
+} from "./radiology.schema.js";
 
 const router = express.Router();
 
@@ -18,7 +21,7 @@ router
 
 router
   .route("/:id")
-  .put(updateRadiologyController)
+  .put(validate(updateRadiologySchema), updateRadiologyController)
   .delete(deleteRadiologyController);
 
 export default router;
