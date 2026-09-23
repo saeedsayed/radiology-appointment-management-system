@@ -1,5 +1,7 @@
 import { type Express } from "express";
 import { publicFilter } from "../middlewares/public-filter.middleware.js";
+import { auth } from "../middlewares/auth.middleware.js";
+import authRoutes from "../modules/auth/auth.route.js";
 import branchesRoutes from "../modules/branches/branch.route.js";
 import radiologiesRoutes from "../modules/radiologies/radiology.route.js";
 import partnersRoutes from "../modules/partners/partner.route.js";
@@ -10,6 +12,12 @@ import categoriesRoutes from "../modules/categories/category.route.js";
 const ROUTE_PREFIX = "/api/v1";
 
 export default function v1Routes(app: Express) {
+  // Public routes (no auth required)
+  app.use(`${ROUTE_PREFIX}/auth`, authRoutes);
+
+  // Protected routes (auth required)
+  app.use(auth);
+
   app.get(ROUTE_PREFIX + "/check", publicFilter(), (req, res) => {
     res.json({
       status: "success",

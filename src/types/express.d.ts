@@ -4,6 +4,10 @@ declare global {
   namespace Express {
     interface Request {
       filters: PublicFilters;
+      user?: {
+        id: string;
+        username: string;
+      };
     }
   }
 }
