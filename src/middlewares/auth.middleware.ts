@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import type { AuthUser } from "../types/express.js";
 import { ApiResponse } from "../utils/api-response.js";
 
 export const auth = (req: Request, res: Response, next: NextFunction): void => {
@@ -16,10 +17,7 @@ export const auth = (req: Request, res: Response, next: NextFunction): void => {
   const token = authHeader.split(" ")[1] as string;
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as {
-      id: string;
-      username: string;
-    };
+    const decoded = jwt.verify(token, JWT_SECRET) as AuthUser;
     req.user = decoded;
     next();
   } catch {

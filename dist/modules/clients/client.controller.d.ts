@@ -1,0 +1,2 @@
+export declare const getAllClientsController: import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>;
+//# sourceMappingURL=client.controller.d.ts.map

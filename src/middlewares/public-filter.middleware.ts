@@ -1,13 +1,8 @@
 import type { NextFunction, Request, RequestHandler, Response } from "express";
+import type { PublicFilters, PublicFilterValue } from "../types/express.js";
 import { ApiError } from "../utils/api-response.js";
 
-export type PublicFilterValue =
-  | string
-  | number
-  | boolean
-  | Array<string | number | boolean>;
-
-export type PublicFilters = Record<string, PublicFilterValue>;
+export type { PublicFilterValue, PublicFilters };
 
 const DEFAULT_PUBLIC_FILTER_KEYS = [
   "search",

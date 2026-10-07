@@ -1,10 +1,11 @@
 import { isValidObjectId } from "mongoose";
+import type { PublicFilters } from "../../types/express.js";
 import { ApiResponse } from "../../utils/api-response.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import Branches from "./branch.model.js";
 
 export const getAllBranchesController = asyncHandler(async (req, res) => {
-  const filters = req.filters;
+  const filters: PublicFilters = req.filters;
   const branches = await Branches.find(filters).populate([
     "availableRadiology.radiology",
     "reservations",
@@ -22,8 +23,18 @@ export const getBranchDetailsController = asyncHandler(async (req, res) => {
       .json(new ApiResponse(400, null, "invalid branch id"));
   }
   const branch = await Branches.findById(id).populate([
-    "availableRadiology.radiology",
-    "reservations",
+    {
+      path: "availableRadiology",
+      populate: {
+        path: "radiology",
+      },
+    },
+    {
+      path: "reservations",
+      populate: {
+        path: "radiologies",
+      },
+    },
   ]);
   if (!branch) {
     return res.status(404).json(new ApiResponse(404, null, "Branch not found"));
